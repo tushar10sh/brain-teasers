@@ -26,7 +26,7 @@ def createBranch(combinationlist, inputlist):
 		print("combinationlist: ", combinationlist)
 	return (combinationlist, inputlist)
 
-def tenderChange(combinationlist, inputlist, rem):
+def createCombinationList(combinationlist, inputlist, rem):
 	if DEBUG_MODE:
 		print ("rem : {} , inputlist : {}".format(rem, inputlist))
 
@@ -38,23 +38,24 @@ def tenderChange(combinationlist, inputlist, rem):
 		rem = rem - maxoflist[0]
 		(tempcombinationlist, reducedInputlist) = createBranch( deepcopy(combinationlist), deepcopy(inputlist))
 		if rem > 0 and len(reducedInputlist) == 0:
+			print("Undoing branching")
 			for i in range(len(combinationlist)):
 				combinationlist[i].append(deepcopy(inputlist[0]))
+			print("combinationlist: ", combinationlist)
 			inputlist.remove(inputlist[0])
 		else:
 			combinationlist = deepcopy(tempcombinationlist)
 			inputlist = reducedInputlist
-		return tenderChange(combinationlist, inputlist, rem)
+		return createCombinationList(combinationlist, inputlist, rem)
 	elif maxoflist[0] == rem:
 		(combinationlist, inputlist) = createBranch( deepcopy(combinationlist), inputlist)
 		return combinationlist
 	else:
 		inputlist.remove(maxoflist)
-		return tenderChange(combinationlist, inputlist, rem)
+		return createCombinationList(combinationlist, inputlist, rem)
 
 def generateResultList( combinationlist, inputlist, truncatedPi):
 	piList = []
-	truncatedPiWithSpaces = truncatedPi
 	spacesToInsert = len(combinationlist)-1
 	restrictedInputList = [ inputlist[combinationlist[i][1]] for i in range(len(combinationlist)) ]
 	start = 0
@@ -88,7 +89,7 @@ def generateSubLists(inputList, truncatedPi):
 	lengthIndexList = sorted(lengthIndexList, reverse=True)
 	if DEBUG_MODE:
 		print("lengthIndexList : ", lengthIndexList)	
-	probableCombinationList = tenderChange([[]], deepcopy(lengthIndexList), lengthOfPI)
+	probableCombinationList = createCombinationList([[]], deepcopy(lengthIndexList), lengthOfPI)
 	if DEBUG_MODE:
 		print("probableCombinationList: ", probableCombinationList)
 	results = []
@@ -106,22 +107,26 @@ def generateSubLists(inputList, truncatedPi):
 					results.append( (len(probableCombinationList[i])-1, resultList))
 	return results
 
-def main(truncatedPi, listofFavNums):	
-	results = generateSubLists(listOfFavNums, truncatedPi)
+def main(truncatedPi, listofFavNums):
+	listOfValidNums = []
+	for i in range(len(listofFavNums)):
+		if listofFavNums[i] in truncatedPi:
+			listOfValidNums.append(listofFavNums[i])
+	results = generateSubLists(listOfValidNums, truncatedPi)
 	print(results)
 
 if __name__ == '__main__':
 	# truncatedPi = sys.argv[1]
 	# listOfFavNums = sys.argv[2:]
-	truncatedPi = '3141592653589793238462643383279'
-	# truncatedPi = '3141592'
-	# listOfFavNums = ['3', '1', '4', '1', '5', '9', '2']
+	# truncatedPi = '3141592653589793238462643383279'
+	truncatedPi = '31415926'
+	listOfFavNums = ['3', '1', '4', '1', '5', '9', '2', '6', '8']
 	# listOfFavNums = ['31', '4', '1', '592']
 	# listOfFavNums = ['314', '49', '9901', '15926535897', '14', '9323', '8462643383279', '4', '793']
 	#listOfFavNums = ['314159265358','9901', '15926535897', '14', '9323', '9793238462643383279', '314', '49', '4', '793']
-	listOfFavNums = ['314159265358979323846264338327', '9', '141592653589793238462643383279', '3']
+	# listOfFavNums = ['314159265358979323846264338327', '9', '141592653589793238462643383279', '3', '14']
 	main(truncatedPi, listOfFavNums)
-	# print(tenderChange([[]], [(20,0), (20, 1), (20, 2), (10,1), (5,2), (2,3), (1,4)], 22))
+	# print(createCombinationList([[]], [(20,0), (20, 1), (20, 2), (10,1), (5,2), (2,3), (1,4)], 22))
 
 
 """
