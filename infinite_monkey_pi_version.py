@@ -93,19 +93,20 @@ def generateSubLists(inputList, truncatedPi):
 	if DEBUG_MODE:
 		print("probableCombinationList: ", probableCombinationList)
 	results = []
-	for i in range(len(probableCombinationList)):
-			match = True
-			for j in range(len(probableCombinationList[i])):
-				if inputList[probableCombinationList[i][j][1]] not in truncatedPi:
-					match = False
-					break
-			if match:
-				if DEBUG_MODE:
-					print("matched probable combination: ", probableCombinationList[i])
-				resultList = generateResultList(deepcopy(probableCombinationList[i]), inputList, truncatedPi)
-				if resultList:
-					results.append( (len(probableCombinationList[i])-1, resultList))
-	return results
+	if probableCombinationList:
+		for i in range(len(probableCombinationList)):
+				match = True
+				for j in range(len(probableCombinationList[i])):
+					if inputList[probableCombinationList[i][j][1]] not in truncatedPi:
+						match = False
+						break
+				if match:
+					if DEBUG_MODE:
+						print("matched probable combination: ", probableCombinationList[i])
+					resultList = generateResultList(deepcopy(probableCombinationList[i]), inputList, truncatedPi)
+					if resultList:
+						results.append( (len(probableCombinationList[i])-1, resultList))
+		return results
 
 def main(truncatedPi, listofFavNums):
 	listOfValidNums = []
@@ -120,7 +121,8 @@ if __name__ == '__main__':
 	# listOfFavNums = sys.argv[2:]
 	# truncatedPi = '3141592653589793238462643383279'
 	truncatedPi = '31415926'
-	listOfFavNums = ['3', '1', '4', '1', '5', '9', '2', '6', '8']
+	listOfFavNums = ['3','1','4']
+	# listOfFavNums = ['3', '1', '4', '1', '5', '9', '2', '6', '8']
 	# listOfFavNums = ['31', '4', '1', '592']
 	# listOfFavNums = ['314', '49', '9901', '15926535897', '14', '9323', '8462643383279', '4', '793']
 	#listOfFavNums = ['314159265358','9901', '15926535897', '14', '9323', '9793238462643383279', '314', '49', '4', '793']
